@@ -6,10 +6,11 @@ const db = levelup(memdown)
 const moment = require('moment')
 
 module.exports.setLimit = (limit, reset) => {
+  var resetTime = reset.split(' ')
   function setKey (requestKey, next, objectKey) {
     var limitObj = objectKey || {
       limit: limit,
-      reset: moment().add(1, 'minute'),
+      reset: moment().add(resetTime[0], resetTime[1]),
       remaining: limit
     }
     console.log('add key', JSON.stringify(limitObj))
@@ -44,12 +45,4 @@ module.exports.setLimit = (limit, reset) => {
       }
     })
   }
-}
-
-module.exports.getLimit = (req, res, next) => {
-  db.get('levelup', (err, value) => {
-    if (err) console.log(err)
-    req.levelup = value
-    next()
-  })
 }
