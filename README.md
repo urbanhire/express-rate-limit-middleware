@@ -25,6 +25,7 @@ app.use(rateLimiter.setLimit({
   limit: 1000, 
   reset: '1 hour' // more convenient to set reset
 }))
+```
 
 * Router Level Middleware
 ```js
