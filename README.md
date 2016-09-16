@@ -19,6 +19,7 @@ Usage
 ```js
 const express = require('express')
 const app = express()
+const rateLimiter = require('express-rate-limit-middleware')
 
 // limit 1000 request per hour to all url
 app.use(rateLimiter.setLimit({
@@ -31,6 +32,7 @@ app.use(rateLimiter.setLimit({
 ```js
 const express = require('express')
 const router = express.Router()
+const rateLimiter = require('express-rate-limit-middleware')
 
 // limit 1000 request per hour to all url
 router.get('/api', 
