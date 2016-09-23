@@ -45,8 +45,8 @@ module.exports.setLimit = (options) => {
       }
       else {
         var limitObj = JSON.parse(value)
-        setHeaders(limitObj)
-        console.log('comparing ', moment(limitObj.reset).format(), moment().format())
+        setHeaders(extend(limitObj, {remaining: limitObj.remaining-1}))
+        // console.log('comparing ', moment(limitObj.reset).format(), moment().format())
         if (moment(limitObj.reset) < moment()){
           setKey({
             requestKey: requestKey
