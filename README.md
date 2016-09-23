@@ -46,6 +46,11 @@ router.get('/api',
 )
 ```
 
+Todo
+------------
+* Key generator parameter
+* Logging 
+
 License
 ----
 

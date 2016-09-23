@@ -22,7 +22,7 @@ module.exports.setLimit = (options) => {
 
     function setHeaders (opt) {
       res.setHeader('X-RateLimit-Limit', opt.limit)
-      res.setHeader('X-RateLimit-Remaining', Math.max(opt.remaining,0))
+      res.setHeader('X-RateLimit-Remaining', opt.remaining)
       res.setHeader('X-RateLimit-Reset', opt.reset)
     }
 
@@ -45,21 +45,20 @@ module.exports.setLimit = (options) => {
       }
       else {
         var limitObj = JSON.parse(value)
-        setHeaders(extend(limitObj, {remaining: limitObj.remaining-1}))
-        // console.log('comparing ', moment(limitObj.reset).format(), moment().format())
+        var newLimit = extend({}, limitObj, {remaining: limitObj.remaining - 1})
+        setHeaders(newLimit)
         if (moment(limitObj.reset) < moment()){
           setKey({
             requestKey: requestKey
           })
         } else if (limitObj.remaining === 0) {
           (options.limitCallback) 
-            ? options.limitCallback(req, res, next, extend(limitObj, {ip: ip, url: url})) 
+            ? options.limitCallback(req, res, next, extend({}, newLimit, {ip: ip, url: url})) 
             : res.status(429).send('You shall not pass!')
         } else {
-          limitObj.remaining--
           setKey({
             requestKey: requestKey,
-            objectKey: limitObj
+            objectKey: newLimit
           })
         }
       }
