@@ -1,8 +1,7 @@
 'use strict'
 
-const levelup = require('levelup')
-const memdown = require('memdown')
-const db = levelup(memdown)
+const LevelStorage = require('./levelstorage')
+const storage = new LevelStorage()
 const moment = require('moment')
 const extend = require('extend')
 
@@ -13,8 +12,7 @@ module.exports.setLimit = (options) => {
   return (req, res, next) => {
 
     function setKey (opt) {
-      console.log('add key', JSON.stringify(opt.objectKey))
-      db.put(opt.requestKey, JSON.stringify(opt.objectKey), (err) => {
+      storage.put(opt, (err) => {
         if (err) console.log(err)
         next()
       })
@@ -28,9 +26,9 @@ module.exports.setLimit = (options) => {
 
     var ip = req.ip
     var url = req.originalUrl
-    console.log('Requestor', ip, url)
     var requestKey = `${ip}:ratelimit:${url}`
-    db.get(requestKey, (err, value) => {
+    
+    storage.get(requestKey, (err, value) => {
       if (err) {
         var objectKey = {
           limit: limit,
