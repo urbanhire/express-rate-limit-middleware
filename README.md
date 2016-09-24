@@ -49,7 +49,8 @@ router.get('/api',
 Todo
 ------------
 * Key generator parameter
-* Logging 
+* Logging
+* Redis storage plugin 
 
 License
 ----

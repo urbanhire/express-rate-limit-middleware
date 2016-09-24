@@ -45,7 +45,7 @@ module.exports.setLimit = (options) => {
       }
       else {
         var limitObj = JSON.parse(value)
-        var newLimit = extend({}, limitObj, {remaining: limitObj.remaining - 1})
+        var newLimit = extend({}, limitObj, {remaining: Math.max(0, limitObj.remaining - 1)})
         setHeaders(newLimit)
         if (moment(limitObj.reset) < moment()){
           setKey({
