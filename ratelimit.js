@@ -5,12 +5,18 @@ const redisStorage = require('./libs/redisstorage')
 const moment = require('moment')
 const extend = require('extend')
 
+function defaultKeyGenerator (req, res) {
+  var ip = req.ip
+  var url = req.originalUrl
+  return `${ip}:ratelimit:${url}`
+}
+
 module.exports.redisRateLimit = redisStorage
 module.exports.levelRateLimit = levelStorage
 
 module.exports.rateLimit = (options) => {
   const storage = (options.storageEngine) ? options.storageEngine : levelStorage()
-
+  const keyGenerator = (options.keyGenerator && typeof options.keyGenerator === 'function') ? options.keyGenerator : defaultKeyGenerator
   var reset = options.reset || '1 hour'
   var limit = options.limit || 1000
   var resetTime = reset.split(' ')
@@ -41,9 +47,7 @@ module.exports.rateLimit = (options) => {
       setHeaders(objectKey)
     }
 
-    var ip = req.ip
-    var url = req.originalUrl
-    var requestKey = `${ip}:ratelimit:${url}`
+    var requestKey = keyGenerator(req, res)
     console.log('requestor', requestKey)
     storage.get(requestKey, (err, value) => {
       console.log(err, value)

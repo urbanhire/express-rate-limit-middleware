@@ -1,6 +1,6 @@
 {
   "name": "express-rate-limit-middleware",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Limiting access using express middleware backed by Level DB like storage",
   "main": "ratelimit.js",
   "author": "Adhitya Ramadhanus",
