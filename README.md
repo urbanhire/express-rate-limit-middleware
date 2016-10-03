@@ -81,9 +81,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(rateLimiter({
   limit: 200, 
   reset: '1 minute',
-  keyGenerator: function (req, res) {
-    //   return 'anjay'
-    // }
   storageEngine: redisStorage(redisClient)
 }))
 ```
@@ -103,7 +100,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(rateLimiter({
   limit: 200, 
   reset: '1 minute',
-  keyGenerator: function (req, res) {
+  keyGenerator: (req, res) => {
     return req.ip + 'anjay'
   }
 }))
