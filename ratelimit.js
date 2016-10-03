@@ -33,7 +33,6 @@ module.exports.rateLimit = (options) => {
     }
 
     var requestKey = keyGenerator(req, res)
-    console.log('requestor', requestKey)
     storage.get(requestKey, (err, value) => {
       if (err || !value) {
         setKey({
