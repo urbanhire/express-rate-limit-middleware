@@ -12,7 +12,11 @@
 
 Installation
 ------------
+* From published module in npm (not latest)
 `npm install --save express-rate-limit-middleware`
+* Using github master branch
+`npm install --save https://github.com/urbanhire/express-rate-limit-middleware.git#master`
+
 
 Usage
 ------------
@@ -25,7 +29,7 @@ const app = express()
 const rateLimiter = require('express-rate-limit-middleware').rateLimit
 
 // limit 1000 request per hour to all url
-app.use(rateLimiter.setLimit({
+app.use(rateLimiter({
   limit: 1000, 
   reset: '1 hour' // more convenient to set reset
 }))
@@ -39,7 +43,7 @@ const rateLimiter = require('express-rate-limit-middleware').rateLimit
 
 // limit 1000 request per hour to all url
 router.get('/api', 
-	rateLimiter.setLimit({
+	rateLimiter({
   		limit: 1000, 
   		reset: '1 hour' // more convenient to set reset
 	}),
@@ -76,16 +80,38 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(rateLimiter({
   limit: 200, 
-  reset: '1 minute'
+  reset: '1 minute',
+  keyGenerator: function (req, res) {
+    //   return 'anjay'
+    // }
   storageEngine: redisStorage(redisClient)
+}))
+```
+* Key generator, by default we're using req.ip and req.originalUrl provided by express, you can define your own key generator
+* Example
+```js
+const express = require('express')
+const app = express()
+const rateLimiter = require('express-rate-limit-middleware').rateLimit
+
+app.set('port', process.env.PORT || 3000)
+app.set('env', process.env.NODE_ENV || 'development')
+// Middlewares setup
+app.use(logger('dev'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(rateLimiter({
+  limit: 200, 
+  reset: '1 minute',
+  keyGenerator: function (req, res) {
+    return req.ip + 'anjay'
+  }
 }))
 ```
 
 Todo
 ------------
-* Key generator parameter
 * Logging
-* Redis storage plugin 
 
 License
 ----
