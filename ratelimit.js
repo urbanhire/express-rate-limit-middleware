@@ -24,7 +24,7 @@ module.exports.rateLimit = (options) => {
     function setKey (opt) {
       storage.put(opt, (err) => {
         if (err) console.log(err)
-        req.rateLimitObj = opt.objectKey
+        req.rateLimitObj = opt
         res.setHeader('X-RateLimit-Limit', opt.objectKey.limit)
         res.setHeader('X-RateLimit-Remaining', opt.objectKey.remaining)
         res.setHeader('X-RateLimit-Reset', opt.objectKey.reset)
@@ -56,7 +56,7 @@ module.exports.rateLimit = (options) => {
           })
         } else if (limitObj.remaining === 0) {
           (options.limitCallback) 
-            ? options.limitCallback(req, res, next, extend({}, limitObj, {ip: ip, url: url})) 
+            ? options.limitCallback(extend({}, req, {rateLimitObj: limitObj}), res, next) 
             : res.status(429).send('You shall not pass!')
         } else {
           var newLimit = extend({}, limitObj, {remaining: limitObj.remaining-1})
